@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_ce/hive.dart';
 import 'package:hive_ce_flutter/adapters.dart';
 import 'package:personal_finance_companion_app/core/appcolors.dart';
 import 'package:personal_finance_companion_app/features/add_transaction/repo/transaction_repo.dart';
@@ -15,7 +14,7 @@ void main() async {
   await TransactionRepository.init();
   await GoalRepository.init();
   await Hive.openBox('settings');
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,8 +23,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
-      title: 'Flutter Demo',
+      title: 'Finsight',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.neutral),
       ),

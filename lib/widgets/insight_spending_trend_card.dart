@@ -8,6 +8,12 @@ class InsightSpendingTrendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final maxY = weeklyData.isEmpty ? 10.0 : (weeklyData.reduce((a, b) => a > b ? a : b) * 1.2).clamp(1.0, double.infinity);
+    final spots = List.generate(
+      weeklyData.length,
+      (i) => FlSpot(i.toDouble(), weeklyData[i]),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,20 +28,11 @@ class InsightSpendingTrendCard extends StatelessWidget {
                 Text('Visualizing your cash outflow\nover 30 days', style: TextStyle(fontSize: 10, color: Colors.black54)),
               ],
             ),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
-                  child: const Text('DAILY', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.primary)),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(12)),
-                  child: const Text('WEEKLY', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.black87)),
-                ),
-              ],
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(12)),
+              child: const Text('WEEKLY', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.black87)),
             ),
           ],
         ),
@@ -48,18 +45,12 @@ class InsightSpendingTrendCard extends StatelessWidget {
               titlesData: const FlTitlesData(show: false),
               borderData: FlBorderData(show: false),
               minX: 0,
-              maxX: 4,
+              maxX: (weeklyData.length - 1).toDouble().clamp(1, double.infinity),
               minY: 0,
-              maxY: 10,
+              maxY: maxY,
               lineBarsData: [
                 LineChartBarData(
-                  spots: const [
-                    FlSpot(0, 3),
-                    FlSpot(1, 5),
-                    FlSpot(2, 3),
-                    FlSpot(3, 8),
-                    FlSpot(4, 2),
-                  ],
+                  spots: spots.isEmpty ? [const FlSpot(0, 0)] : spots,
                   isCurved: true,
                   color: AppColors.primary,
                   barWidth: 2,
@@ -69,8 +60,8 @@ class InsightSpendingTrendCard extends StatelessWidget {
                     show: true,
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primary.withOpacity(0.3),
-                        AppColors.primary.withOpacity(0.0),
+                        AppColors.primary.withValues(alpha: 0.3),
+                        AppColors.primary.withValues(alpha: 0.0),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -82,15 +73,11 @@ class InsightSpendingTrendCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('OCT 1', style: TextStyle(fontSize: 8, color: Colors.black54)),
-            Text('OCT 8', style: TextStyle(fontSize: 8, color: Colors.black54)),
-            Text('OCT 15', style: TextStyle(fontSize: 8, color: Colors.black54)),
-            Text('OCT 22', style: TextStyle(fontSize: 8, color: Colors.black54)),
-            Text('OCT 29', style: TextStyle(fontSize: 8, color: Colors.black54)),
-          ],
+          children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+              .map((d) => Text(d, style: const TextStyle(fontSize: 8, color: Colors.black54)))
+              .toList(),
         ),
       ],
     );

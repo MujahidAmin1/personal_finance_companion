@@ -5,21 +5,22 @@ import 'package:personal_finance_companion_app/core/knavigate.dart';
 import 'package:personal_finance_companion_app/core/ktextStyle.dart';
 import 'package:personal_finance_companion_app/features/add_transaction/controller/transaction_controller.dart';
 import 'package:personal_finance_companion_app/features/add_transaction/view/add_transaction_screen.dart';
+import 'package:personal_finance_companion_app/features/btm_navbar/controller/navbar_ctrl.dart';
+import 'package:personal_finance_companion_app/features/onboarding/controller/onboarding_ctrl.dart';
 import 'package:personal_finance_companion_app/widgets/balance_card_widget.dart';
 import 'package:personal_finance_companion_app/widgets/transaction_view_card.dart';
-import 'package:personal_finance_companion_app/features/onboarding/controller/onboarding_ctrl.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var allTransactions = ref.watch(allTransactionsProvider);
+    final allTransactions = ref.watch(allTransactionsProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Row(
+        title: const Row(
           children: [
             CircleAvatar(
               radius: 16,
@@ -29,16 +30,21 @@ class DashboardScreen extends ConsumerWidget {
             SizedBox(width: 12),
             Text(
               'Finsight',
-              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 25),
             ),
           ],
-        ),),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Welcome, ${ref.watch(onboardingControllerProvider).userName}", style: kTextStyle(fontSize: 17)),
+            Text(
+              ' Welcome, ${ref.watch(onboardingControllerProvider).userName}',
+              style: kTextStyle(fontSize: 17, isBold: true),
+            ),
+            const SizedBox(height: 10),
             BalanceCard(
               totalBalance: ref.watch(balanceProvider),
               income: ref.watch(totalIncomeProvider),
@@ -48,34 +54,23 @@ class DashboardScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Recent Transactions",
-                  style: kTextStyle(fontSize: 20, isBold: true),
-                ),
+                Text('Recent Transactions', style: kTextStyle(fontSize: 20, isBold: true)),
                 InkWell(
-                  onTap: () {},
-                  child: Text(
-                    "View All",
-                    style: kTextStyle(fontColor: AppColors.primary),
-                  ),
+                  onTap: () {
+                    navigateTo(ref, 1);
+                  },
+                  child: Text('View All', style: kTextStyle(fontColor: AppColors.primary)),
                 ),
               ],
             ),
             const SizedBox(height: 16),
             Expanded(
               child: allTransactions.isEmpty
-                  ? Center(
-                      child: Text(
-                        "No transactions yet. Add one!",
-                        style: kTextStyle(fontColor: Colors.grey),
-                      ),
-                    )
+                  ? Center(child: Text('No transactions yet. Add one!', style: kTextStyle(fontColor: Colors.grey)))
                   : ListView.builder(
                       itemCount: allTransactions.length > 6 ? 6 : allTransactions.length,
                       itemBuilder: (context, index) {
-                        return TransactionViewCard(
-                          transaction: allTransactions[index],
-                        );
+                        return TransactionViewCard(transaction: allTransactions[index]);
                       },
                     ),
             ),
@@ -84,8 +79,8 @@ class DashboardScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
-        child: Icon(Icons.add),
-        onPressed: () => context.push(AddTransactionScreen()),
+        onPressed: () => context.push(const AddTransactionScreen()),
+        child: const Icon(Icons.add),
       ),
     );
   }

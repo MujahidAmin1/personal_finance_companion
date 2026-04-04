@@ -13,39 +13,31 @@ class TransactionHistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScreen> {
-  String _searchQuery = '';
   String _selectedFilter = 'All';
 
   @override
   Widget build(BuildContext context) {
     final allTransactions = ref.watch(allTransactionsProvider);
-    
-    var filteredTransactions = allTransactions.where((t) {
-      if (_searchQuery.isNotEmpty && !t.title.toLowerCase().contains(_searchQuery.toLowerCase())) {
-        return false;
-      }
+
+    final filteredTransactions = allTransactions.where((t) {
       if (_selectedFilter == 'Income' && t.type != TransactionType.income) return false;
       if (_selectedFilter == 'Expense' && t.type != TransactionType.expense) return false;
       return true;
-    }).toList();
+    }).toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
 
-    filteredTransactions.sort((a, b) => b.date.compareTo(a.date));
-
-    final Map<String, List<Transaction>> grouped = {};
+    final grouped = <String, List<Transaction>>{};
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
 
-    for (var t in filteredTransactions) {
+    for (final t in filteredTransactions) {
       final date = DateTime(t.date.year, t.date.month, t.date.day);
-      String key;
-      if (date == today) {
-        key = 'TODAY';
-      } else if (date == yesterday) {
-        key = 'YESTERDAY';
-      } else {
-        key = 'EARLIER';
-      }
+      final key = date == today
+          ? 'TODAY'
+          : date == yesterday
+              ? 'YESTERDAY'
+              : 'EARLIER';
       grouped.putIfAbsent(key, () => []).add(t);
     }
 
@@ -54,46 +46,22 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Row(
+        title: const Row(
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 16,
               backgroundColor: Colors.black87,
               child: Icon(Icons.person, color: Colors.white, size: 20),
             ),
-            const SizedBox(width: 12),
-            const Text(
-              'Finsight',
-              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+            SizedBox(width: 12),
+            Text('Transaction History', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18)),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.black87),
-            onPressed: () {},
-          )
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           children: [
-            TextField(
-              onChanged: (val) => setState(() => _searchQuery = val),
-              decoration: InputDecoration(
-                hintText: 'Search transactions...',
-                hintStyle: const TextStyle(color: Colors.black38),
-                prefixIcon: const Icon(Icons.search, color: Colors.black38),
-                filled: true,
-                fillColor: const Color(0xFFF3F4F6),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
             Row(
               children: [
                 _buildFilterChip('All'),
@@ -130,23 +98,23 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
                         ),
                       ),
                       ...items.map((t) => Dismissible(
-                        key: Key(t.id),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFB91C1C),
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 24),
-                          child: const Icon(Icons.delete, color: Colors.white, size: 32),
-                        ),
-                        onDismissed: (_) {
-                          ref.read(transactionControllerProvider.notifier).deleteTransaction(t.id);
-                        },
-                        child: TransactionViewCard(transaction: t),
-                      )),
+                            key: Key(t.id),
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFB91C1C),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 24),
+                              child: const Icon(Icons.delete, color: Colors.white, size: 32),
+                            ),
+                            onDismissed: (_) {
+                              ref.read(transactionControllerProvider.notifier).deleteTransaction(t.id);
+                            },
+                            child: TransactionViewCard(transaction: t),
+                          )),
                     ],
                   );
                 },
@@ -155,7 +123,6 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
           ],
         ),
       ),
-      
     );
   }
 
@@ -166,21 +133,18 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected 
-          ? switch (_selectedFilter) {
-            "Expense" => Colors.red,
-            "Income" => Colors.green,
-            _ => Colors.deepPurpleAccent,
-          } : AppColors.neutral,
+          color: isSelected
+              ? switch (label) {
+                  'Expense' => Colors.red,
+                  'Income' => Colors.green,
+                  _ => Colors.deepPurpleAccent,
+                }
+              : AppColors.neutral,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: isSelected ? Colors.white : Colors.black87,
-          ),
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: isSelected ? Colors.white : Colors.black87),
         ),
       ),
     );

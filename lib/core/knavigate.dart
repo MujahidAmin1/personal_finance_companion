@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 extension BuildContextExtensions on BuildContext {
@@ -8,11 +7,9 @@ extension BuildContextExtensions on BuildContext {
     );
   }
 
-
   void pop<T>([T? result]) {
     Navigator.of(this).pop<T>(result);
   }
-
 
   Future<T?> pushReplacement<T, TO>(Widget page, {TO? result}) {
     return Navigator.of(this).pushReplacement<T, TO>(
@@ -20,7 +17,6 @@ extension BuildContextExtensions on BuildContext {
       result: result,
     );
   }
-
 
   Future<T?> pushAndRemoveUntil<T>(Widget page) {
     return Navigator.of(this).pushAndRemoveUntil<T>(

@@ -4,22 +4,19 @@ import 'package:personal_finance_companion_app/features/dashboard/view/dashboard
 import 'package:personal_finance_companion_app/features/goals/view/goal_view.dart';
 import 'package:personal_finance_companion_app/features/insights/view/insights_screen.dart';
 import 'package:personal_finance_companion_app/features/transaction_history/transaction_history.dart';
-import 'package:personal_finance_companion_app/widgets/transaction_view_card.dart';
-
 import '../controller/navbar_ctrl.dart';
 
 class BtmNavBarScreen extends ConsumerWidget {
   const BtmNavBarScreen({super.key});
 
   @override
- 
   Widget build(BuildContext context, WidgetRef ref) {
-    var currentScreen = ref.watch(currentScreenProvider);
-    List<Widget> screens = [
-      DashboardScreen(),
-      TransactionHistoryScreen(),
-      GoalView(),
-      InsightsScreen(),
+    final currentScreen = ref.watch(currentScreenProvider);
+    final screens = [
+      const DashboardScreen(),
+      const TransactionHistoryScreen(),
+      const GoalView(),
+      const InsightsScreen(),
     ];
     return Scaffold(
       body: IndexedStack(
@@ -28,16 +25,14 @@ class BtmNavBarScreen extends ConsumerWidget {
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentScreen ?? 0,
-        onDestinationSelected: (value) {
-          navigateTo(ref, value);
-        },
+        onDestinationSelected: (value) => navigateTo(ref, value),
         destinations: const [
-           NavigationDestination(
+          NavigationDestination(
             selectedIcon: Icon(Icons.home_filled),
             icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
-           NavigationDestination(
+          NavigationDestination(
             selectedIcon: Icon(Icons.receipt_long),
             icon: Icon(Icons.receipt_long_outlined),
             label: 'Transaction',
@@ -52,10 +47,8 @@ class BtmNavBarScreen extends ConsumerWidget {
             icon: Icon(Icons.insights_outlined),
             label: 'Insights',
           ),
-        ]
-        ),
+        ],
+      ),
     );
   }
 }
-
-

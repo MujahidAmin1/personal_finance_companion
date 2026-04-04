@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:personal_finance_companion_app/core/appcolors.dart';
 
 class InsightWeeklyShiftCard extends StatelessWidget {
   final double shiftAmount;
@@ -17,14 +18,10 @@ class InsightWeeklyShiftCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.secondary,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 8)),
         ],
       ),
       child: Column(
@@ -41,10 +38,7 @@ class InsightWeeklyShiftCard extends StatelessWidget {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
           ),
           const SizedBox(height: 4),
-          Text(
-            text,
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.0),
-          ),
+          Text(text, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.0)),
         ],
       ),
     );

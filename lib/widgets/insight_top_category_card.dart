@@ -5,25 +5,17 @@ class InsightTopCategoryCard extends StatelessWidget {
   final String categoryName;
   final double percentage;
 
-  const InsightTopCategoryCard({
-    super.key,
-    required this.categoryName,
-    required this.percentage,
-  });
+  const InsightTopCategoryCard({super.key, required this.categoryName, required this.percentage});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.tertiary,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 8)),
         ],
       ),
       child: Column(
@@ -39,14 +31,8 @@ class InsightTopCategoryCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                categoryName,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
-              ),
-              Text(
-                '${percentage.toStringAsFixed(0)}%',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
-              ),
+              Text(categoryName, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary)),
+              Text('${percentage.toStringAsFixed(0)}%', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
             ],
           ),
         ],

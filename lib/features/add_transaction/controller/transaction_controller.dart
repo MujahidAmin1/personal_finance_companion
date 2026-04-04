@@ -53,8 +53,7 @@ class TransactionState {
     return TransactionState(
       transactions: transactions ?? this.transactions,
       searchQuery: searchQuery ?? this.searchQuery,
-      selectedCategory:
-          clearCategory ? null : (selectedCategory ?? this.selectedCategory),
+      selectedCategory: clearCategory ? null : (selectedCategory ?? this.selectedCategory),
       selectedType: clearType ? null : (selectedType ?? this.selectedType),
     );
   }
@@ -69,7 +68,6 @@ class TransactionController extends Notifier<TransactionState> {
       state = state.copyWith(transactions: _repo.getAll());
     });
     ref.onDispose(sub.cancel);
-
     return TransactionState(transactions: _repo.getAll());
   }
 
@@ -106,50 +104,31 @@ class TransactionController extends Notifier<TransactionState> {
   }
 
   void clearFilters() {
-    state = state.copyWith(
-      searchQuery: '',
-      clearCategory: true,
-      clearType: true,
-    );
+    state = state.copyWith(searchQuery: '', clearCategory: true, clearType: true);
   }
 
   double get balance => _repo.getBalance();
   double get totalIncome => _repo.getTotalIncome();
   double get totalExpenses => _repo.getTotalExpenses();
 
-  List<double> getWeeklyExpenses(DateTime weekStart) {
-    return _repo.getWeeklyExpenses(weekStart);
-  }
+  List<double> getWeeklyExpenses(DateTime weekStart) => _repo.getWeeklyExpenses(weekStart);
 
-  List<double> getMonthlyTrend({int months = 6}) {
-    return _repo.getMonthlyTrend(months: months);
-  }
+  List<double> getMonthlyTrend({int months = 6}) => _repo.getMonthlyTrend(months: months);
 
-  Map<TransactionCategory, double> getMonthlySpendingByCategory(
-      int year, int month) {
+  Map<TransactionCategory, double> getMonthlySpendingByCategory(int year, int month) {
     return _repo.getMonthlySpendingByCategory(year, month);
   }
 
-  double getSpentByCategory(
-    TransactionCategory category, {
-    int? year,
-    int? month,
-  }) {
+  double getSpentByCategory(TransactionCategory category, {int? year, int? month}) {
     return _repo.getSpentByCategory(category, year: year, month: month);
   }
 
-  List<Transaction> getByMonth(int year, int month) {
-    return _repo.getByMonth(year, month);
-  }
+  List<Transaction> getByMonth(int year, int month) => _repo.getByMonth(year, month);
 }
 
 final transactionControllerProvider =
-    NotifierProvider<TransactionController, TransactionState>(
-  TransactionController.new,
-);
+    NotifierProvider<TransactionController, TransactionState>(TransactionController.new);
 
-
-// for convenience
 final allTransactionsProvider = Provider<List<Transaction>>((ref) {
   return ref.watch(transactionControllerProvider).transactions;
 });

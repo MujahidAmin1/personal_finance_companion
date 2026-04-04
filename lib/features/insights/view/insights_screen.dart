@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:personal_finance_companion_app/features/add_transaction/controller/transaction_controller.dart';
-import 'package:personal_finance_companion_app/models/transaction.dart';
 import 'package:personal_finance_companion_app/widgets/insight_top_category_card.dart';
 import 'package:personal_finance_companion_app/widgets/insight_weekly_shift_card.dart';
 import 'package:personal_finance_companion_app/widgets/insight_monthly_breakdown_card.dart';
@@ -14,30 +13,19 @@ class InsightsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactions = ref.watch(allTransactionsProvider);
+    ref.watch(transactionControllerProvider);
+    final controller = ref.read(transactionControllerProvider.notifier);
     final now = DateTime.now();
 
-    Map<TransactionCategory, double> thisMonthSpending = {};
-    double totalMonthSpent = 0;
-    
-    double thisWeekSpent = 0;
-    double lastWeekSpent = 0;
-    
-    for (final t in transactions) {
-      if (t.type == TransactionType.expense) {
-        if (t.date.year == now.year && t.date.month == now.month) {
-          thisMonthSpending[t.category] = (thisMonthSpending[t.category] ?? 0) + t.amount;
-          totalMonthSpent += t.amount;
-        }
-        
-        final diffDays = now.difference(t.date).inDays;
-        if (diffDays >= 0 && diffDays < 7) {
-          thisWeekSpent += t.amount;
-        } else if (diffDays >= 7 && diffDays < 14) {
-          lastWeekSpent += t.amount;
-        }
-      }
-    }
+    final thisMonthSpending = controller.getMonthlySpendingByCategory(now.year, now.month);
+    final totalMonthSpent = thisMonthSpending.values.fold(0.0, (sum, val) => sum + val);
+
+    final weekStart = now.subtract(Duration(days: now.weekday % 7));
+    final thisWeekData = controller.getWeeklyExpenses(weekStart);
+    final thisWeekSpent = thisWeekData.fold<double>(0.0, (sum, val) => sum + val);
+
+    final lastWeekStart = weekStart.subtract(const Duration(days: 7));
+    final lastWeekSpent = controller.getWeeklyExpenses(lastWeekStart).fold<double>(0.0, (sum, val) => sum + val);
 
     String topCategoryName = 'None';
     double topCategoryPercent = 0.0;
@@ -56,26 +44,17 @@ class InsightsScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Row(
+        title: const Row(
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 16,
               backgroundColor: Colors.black87,
               child: Icon(Icons.person, color: Colors.white, size: 20),
             ),
-            const SizedBox(width: 12),
-            const Text(
-              'Finsight',
-              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+            SizedBox(width: 12),
+            Text('Finsight', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 25)),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.black87),
-            onPressed: () {},
-          )
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -97,13 +76,9 @@ class InsightsScreen extends ConsumerWidget {
             const SizedBox(height: 32),
             InsightMonthlyBreakdownCard(categorySpending: thisMonthSpending, totalSpent: totalMonthSpent),
             const SizedBox(height: 48),
-            const InsightSpendingTrendCard(weeklyData: []),
+            InsightSpendingTrendCard(weeklyData: thisWeekData),
             const SizedBox(height: 32),
-            InsightWeeklyComparisonCard(
-              thisWeek: thisWeekSpent,
-              lastWeek: lastWeekSpent,
-              percentageDiff: diffPercent,
-            ),
+            InsightWeeklyComparisonCard(thisWeek: thisWeekSpent, lastWeek: lastWeekSpent, percentageDiff: diffPercent),
             const SizedBox(height: 40),
           ],
         ),

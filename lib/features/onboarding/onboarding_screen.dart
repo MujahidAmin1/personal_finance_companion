@@ -17,17 +17,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
       final isFirstTime = ref.read(onboardingControllerProvider).isFirstTime;
       if (isFirstTime) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const FirstSetupScreen()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FirstSetupScreen()));
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const BtmNavBarScreen()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const BtmNavBarScreen()));
       }
     });
   }
@@ -47,43 +42,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 color: const Color(0xFFEFE9FE),
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: Stack(
+              child: const Stack(
                 alignment: Alignment.center,
                 children: [
-                  Positioned(
-                    top: 32,
-                    right: 32,
-                    child: CircleAvatar(radius: 12, backgroundColor: AppColors.primary),
-                  ),
-                  Positioned(
-                    bottom: 40,
-                    left: 36,
-                    child: CircleAvatar(radius: 10, backgroundColor: AppColors.primary),
-                  ),
-                  Positioned(
-                    bottom: 30,
-                    right: 48,
-                    child: CircleAvatar(radius: 8, backgroundColor: AppColors.primary),
-                  ),
+                  Positioned(top: 32, right: 32, child: CircleAvatar(radius: 12, backgroundColor: AppColors.primary)),
+                  Positioned(bottom: 40, left: 36, child: CircleAvatar(radius: 10, backgroundColor: AppColors.primary)),
+                  Positioned(bottom: 30, right: 48, child: CircleAvatar(radius: 8, backgroundColor: AppColors.primary)),
                 ],
               ),
             ),
             const SizedBox(height: 32),
             const Text(
               'Finsight',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF1F2937),
-              ),
+              style: TextStyle(fontSize: 36, fontWeight: FontWeight.w800, color: Color(0xFF1F2937)),
             ),
             const SizedBox(height: 12),
             const Text(
               'Your personal budget tracker',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFF6B7280),
-              ),
+              style: TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
             ),
           ],
         ),
