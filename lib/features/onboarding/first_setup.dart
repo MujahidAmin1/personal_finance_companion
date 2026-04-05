@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:personal_finance_companion_app/core/appcolors.dart';
+import 'package:personal_finance_companion_app/core/currency_format.dart';
+import 'package:personal_finance_companion_app/core/money_formatter.dart';
 import 'package:personal_finance_companion_app/features/btm_navbar/view/navbar_view.dart';
 import 'package:personal_finance_companion_app/features/onboarding/controller/onboarding_ctrl.dart';
 
@@ -66,6 +70,9 @@ class _FirstSetupScreenState extends ConsumerState<FirstSetupScreen> {
             const SizedBox(height: 16),
             TextField(
               controller: _balanceController,
+              inputFormatters: [
+                ThousandsFormatter(),
+              ],
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
                 labelText: 'Initial Balance (\$)',

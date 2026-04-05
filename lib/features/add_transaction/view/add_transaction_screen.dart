@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:personal_finance_companion_app/core/appcolors.dart';
+import 'package:personal_finance_companion_app/core/money_formatter.dart';
 import '../../../models/transaction.dart';
 import '../../../widgets/category_chip_card.dart';
 import '../controller/transaction_controller.dart';
@@ -96,19 +97,23 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 children: [
                   const Text(
                     '\$',
-                    style: TextStyle(fontSize: 42, fontWeight: FontWeight.w300, color: Color(0xFF97A6F6)),
+                    style: TextStyle(fontSize: 42, fontWeight: FontWeight.w300, color: Color.fromARGB(255, 68, 81, 142)),
                   ),
                   const SizedBox(width: 8),
                   IntrinsicWidth(
                     child: TextFormField(
                       controller: _amountController,
+                      inputFormatters: [
+                        ThousandsFormatter(),
+                      ],
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      style: const TextStyle(fontSize: 56, fontWeight: FontWeight.w300, color: Color(0xFFC0CAFE)),
+                      style: const TextStyle(fontSize: 56, fontWeight: FontWeight.w300, color: Color.fromARGB(255, 68, 81, 142)),
                       validator: (value) {
                         if (value == null || value.isEmpty) return 'Enter amount';
                         if (double.tryParse(value.replaceAll(',', '')) == null) return 'Invalid';
                         return null;
                       },
+                      maxLength: 11,
                       decoration: const InputDecoration(
                         hintText: '0.00',
                         hintStyle: TextStyle(color: Color(0xFFDCE2FF)),

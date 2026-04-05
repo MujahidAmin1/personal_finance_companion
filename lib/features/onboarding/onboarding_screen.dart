@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:personal_finance_companion_app/core/appcolors.dart';
+import 'package:personal_finance_companion_app/core/knavigate.dart';
 import 'package:personal_finance_companion_app/features/btm_navbar/view/navbar_view.dart';
 import 'package:personal_finance_companion_app/features/onboarding/controller/onboarding_ctrl.dart';
 import 'package:personal_finance_companion_app/features/onboarding/first_setup.dart';
@@ -20,9 +21,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (!mounted) return;
       final isFirstTime = ref.read(onboardingControllerProvider).isFirstTime;
       if (isFirstTime) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FirstSetupScreen()));
+        context.pushReplacement(const FirstSetupScreen());
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const BtmNavBarScreen()));
+        context.pushReplacement(BtmNavBarScreen());
       }
     });
   }
